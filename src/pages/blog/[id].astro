@@ -1,0 +1,79 @@
+---
+// src/pages/blog/[id].astro
+import { getCollection, render } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+
+import ProgressBar from '../../components/blog/ProgressBar.astro';
+import BlogTOC from '../../components/blog/BlogTOC.astro';
+import BlogHeader from '../../components/blog/BlogHeader.astro';
+import BlogNavigation from '../../components/blog/BlogNavigation.astro';
+import BlogSidebarRight from '../../components/blog/BlogSidebarRight.astro';
+import FloatingBack from '../../components/blog/FloatingBack.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  const sortedPosts = posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+  return sortedPosts.map((post, index) => ({
+    params: { id: post.id },
+    props: { 
+      post,
+      nextPost: index > 0 ? sortedPosts[index - 1] : null,
+      prevPost: index < sortedPosts.length - 1 ? sortedPosts[index + 1] : null,
+    },
+  }));
+}
+
+const { post, nextPost, prevPost } = Astro.props;
+const { Content, headings } = await render(post);
+
+const tags = post.data.tags || ['astro', 'elysia.js'];
+const readingTime = post.data.readingTime || '5 menit baca';
+---
+
+<Layout 
+  title={`${post.data.title} | Blog Faiq`}
+  description={post.data.description}
+>
+  <ProgressBar />
+
+  <!-- overflow-x-hidden dihapus agar bayangan (shadow) 4px bisa bebas tampil di area padding (px-5) -->
+  <main id="main-content" class="max-w-[1400px] mx-auto px-5 md:px-6 py-8 md:py-12 mb-24">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 relative items-start">
+      
+      <!-- KIRI: Daftar Isi -->
+      <aside class="lg:col-span-2">
+        <BlogTOC headings={headings} />
+      </aside>
+
+      <!-- TENGAH: Konten Artikel -->
+      <!-- Kunci 1: Tambahkan min-w-0 di sini agar kotak grid tidak melar menabrak layar -->
+      <div class="lg:col-span-7 min-w-0 w-full">
+        
+        <div class="bg-white border-2 border-black rounded-2xl p-5 md:p-10 shadow-[4px_4px_0px_rgba(0,0,0,1)] md:shadow-[8px_8px_0px_rgba(0,0,0,1)] mb-10 md:mb-12">
+          
+          <BlogHeader post={post} tags={tags} readingTime={readingTime} />
+          
+          <!-- Kunci 2: Bungkus dengan overflow-hidden sebagai lapis pengaman ganda -->
+          <div class="w-full overflow-hidden">
+            <!-- Kunci 3: Gunakan kombinasi break-all dan [overflow-wrap:anywhere] -->
+            <article class="prose prose-base md:prose-lg max-w-none w-full break-words break-all [overflow-wrap:anywhere] text-gray-800 leading-relaxed font-medium prose-headings:font-display prose-headings:font-black prose-a:text-brand-dark prose-img:rounded-xl prose-img:border-2 prose-img:border-black prose-img:shadow-[4px_4px_0px_rgba(0,0,0,1)]">
+              <Content />
+            </article>
+          </div>
+
+        </div>
+
+        <BlogNavigation prevPost={prevPost} nextPost={nextPost} />
+      </div>
+
+      <!-- KANAN: Informasi Sidebar -->
+      <aside class="lg:col-span-3 pl-0 lg:pl-8">
+        <BlogSidebarRight post={post} />
+      </aside>
+
+    </div>
+  </main>
+
+  <FloatingBack />
+</Layout>

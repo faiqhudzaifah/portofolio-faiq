@@ -1,0 +1,38 @@
+---
+// src/components/BlogCard.astro
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  post: CollectionEntry<'blog'>;
+}
+
+const { post } = Astro.props;
+const postYear = post.data.pubDate.getFullYear();
+---
+
+<article 
+  class="blog-card group border border-gray-200 rounded-2xl p-6 bg-white hover:shadow-md hover:border-brand/30 transition-all flex flex-col md:flex-row md:items-center justify-between gap-4"
+  data-title={post.data.title.toLowerCase()}
+  data-year={postYear}
+>
+  <div class="flex-grow">
+    <div class="flex items-center gap-3 mb-2">
+      <span class="text-xs font-bold text-gray-500">{post.data.pubDate.toLocaleDateString()}</span>
+      
+      <span class="w-1 h-1 rounded-full bg-brand"></span>
+      
+      <span class="text-[10px] font-bold text-brand-dark uppercase tracking-widest">Tahun {postYear}</span>
+    </div>
+    
+    <a href={`/blog/${post.id}`}>
+      <h2 class="text-2xl font-display font-black leading-tight group-hover:text-brand-dark transition-colors mb-2">
+        {post.data.title}
+      </h2>
+    </a>
+    <p class="text-sm text-gray-600 font-medium line-clamp-2">{post.data.description}</p>
+  </div>
+  
+  <a href={`/blog/${post.id}`} class="shrink-0 text-xs font-bold uppercase tracking-widest text-gray-700 group-hover:text-brand-dark flex items-center gap-1 transition-colors">
+    Baca <span class="text-lg leading-none">&rarr;</span>
+  </a>
+</article>

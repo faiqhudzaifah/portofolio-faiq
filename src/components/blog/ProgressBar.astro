@@ -1,0 +1,19 @@
+---
+// src/components/blog/ProgressBar.astro
+---
+<div class="fixed top-0 left-0 w-full h-1 bg-gray-100 z-50">
+  <div id="progressBar" class="h-full bg-brand w-0 transition-all duration-100 ease-out"></div>
+</div>
+
+<script>
+  window.addEventListener('scroll', () => {
+    const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+    const scrolled = window.scrollY;
+    const progressBar = document.getElementById('progressBar');
+    
+    if (progressBar) {
+      const percentage = (scrolled / scrollable) * 100;
+      progressBar.style.width = `${percentage}%`;
+    }
+  });
+</script>

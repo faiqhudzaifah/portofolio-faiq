@@ -1,0 +1,64 @@
+---
+// src/pages/tags/[tag].astro
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import BlogCard from '../../components/BlogCard.astro';
+import FloatingBack from '../../components/blog/FloatingBack.astro';
+
+export async function getStaticPaths() {
+  // 1. Ambil semua data artikel blog
+  const allPosts = await getCollection('blog');
+
+  // 2. Kumpulkan semua tag unik dari seluruh artikel
+  const uniqueTags = [...new Set(allPosts.map((post) => post.data.tags || []).flat())];
+
+  // 3. Buat path (rute) untuk masing-masing tag unik
+  return uniqueTags.map((tag) => {
+    // 4. Filter artikel yang memiliki tag ini dan urutkan dari yang terbaru
+    const filteredPosts = allPosts
+      .filter((post) => post.data.tags?.includes(tag))
+      .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+    return {
+      params: { tag },
+      props: { posts: filteredPosts },
+    };
+  });
+}
+
+const { tag } = Astro.params;
+const { posts } = Astro.props;
+---
+
+<Layout 
+  title={`Kumpulan Artikel #${tag} | Blog Faiq`}
+  description={`Menemukan ${posts.length} artikel menarik yang membahas seputar topik ${tag} di blog Faiq Hudzaifah.`}
+>
+  <!-- Lebar container disamakan dengan halaman blog utama -->
+  <main id="main-content" class="max-w-6xl mx-auto px-5 md:px-6 py-12 mb-24 min-h-screen">
+    
+    <!-- Header Halaman Tag bergaya Neo-Brutalism -->
+    <div class="bg-white border-2 border-black rounded-2xl p-6 md:p-10 shadow-[4px_4px_0px_rgba(0,0,0,1)] md:shadow-[8px_8px_0px_rgba(0,0,0,1)] mb-12">
+      <p class="text-[10px] font-bold text-brand-dark uppercase tracking-widest mb-4">Hasil Pencarian Tag</p>
+      
+      <h1 class="text-4xl md:text-5xl font-display font-black leading-[1.1] tracking-tight mb-4">
+        #{tag}
+      </h1>
+      
+      <p class="text-sm font-medium text-gray-600">
+        Menemukan <strong class="text-black bg-brand/20 px-1 rounded">{posts.length}</strong> artikel yang membahas topik ini.
+      </p>
+    </div>
+
+    <!-- Daftar Artikel (Menggunakan styling yang sama dengan halaman index blog) -->
+    <div class="space-y-4">
+      {posts.map((post) => (
+        <BlogCard post={post} />
+      ))}
+    </div>
+
+  </main>
+
+  <!-- Gunakan tombol kembali (mengarah ke halaman blog utama) -->
+  <FloatingBack />
+</Layout>

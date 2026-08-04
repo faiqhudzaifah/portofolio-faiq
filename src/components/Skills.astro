@@ -1,0 +1,36 @@
+---
+// src/components/Skills.astro
+import { getEntry } from 'astro:content';
+import Divider from './Divider.astro';
+
+// Ambil entri data tunggal dari file data.json di koleksi skills
+const skillsData = await getEntry('skills', 'data');
+
+// Fallback aman jika file belum terbaca
+const hardSkills = skillsData ? skillsData.data.hardSkills : [];
+const softSkills = skillsData ? skillsData.data.softSkills : [];
+---
+
+<div class="mt-8">
+  <Divider/>
+
+  <div class="text-center">
+    <h3 class="text-[10px] font-display font-bold tracking-[0.2em] mb-6">SOFTWARE SKILLS</h3>
+    <div class="flex flex-wrap justify-center gap-3 mb-10">
+      {hardSkills.map(skill => (
+        <div class="bg-brand text-black font-display font-bold text-xs py-3 px-4 rounded-md shadow-sm min-w-[3rem]">
+          {skill}
+        </div>
+      ))}
+    </div>
+
+    <h3 class="text-[10px] font-display font-bold tracking-[0.2em] mb-6">INTEREST</h3>
+    <div class="flex flex-wrap justify-center gap-3">
+      {softSkills.map(interest => (
+        <div class="border border-brand text-brand-dark font-display font-bold text-[10px] tracking-wider uppercase py-2 px-6 rounded-full">
+          {interest}
+        </div>
+      ))}
+    </div>
+  </div>
+</div>

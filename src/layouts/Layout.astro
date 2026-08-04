@@ -1,0 +1,48 @@
+---
+import '../styles/global.css';
+import FloatingNav from '../components/FloatingNav.astro';
+
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { 
+  title = "Portfolio - Muhammad Faiq Hudzaifah",
+  description = "Portofolio dan blog pribadi Muhammad Faiq Hudzaifah."
+} = Astro.props;
+---
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    
+    <!-- Fonts -->
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Caveat:wght@700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+  </head>
+  <body class="bg-white text-black min-h-screen font-sans">
+    <!-- SKIP TO CONTENT LINK -->
+    <a 
+      href="#main-content" 
+      class="absolute left-0 top-0 z-[9999] -translate-y-full focus:translate-y-0 bg-brand text-black font-display font-black px-6 py-3 border-b-2 border-r-2 border-black transition-transform duration-200 focus:outline-none focus:ring-4 focus:ring-black/50"
+    >
+      Lompat ke konten utama
+    </a>
+    
+    <slot />
+
+    <FloatingNav />
+    
+  </body>
+</html>

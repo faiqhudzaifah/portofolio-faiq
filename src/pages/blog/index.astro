@@ -1,0 +1,94 @@
+---
+// src/pages/blog/index.astro
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import Hero from '../../components/Hero.astro';
+import Divider from '../../components/Divider.astro';
+import BlogToolbar from '../../components/BlogToolbar.astro';
+import BlogCard from '../../components/BlogCard.astro';
+import karakterBlog from '../../assets/karakter.webp'; 
+
+const allPosts = await getCollection('blog');
+const sortedPosts = allPosts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+const availableYears = [...new Set(sortedPosts.map(post => post.data.pubDate.getFullYear()))].sort((a, b) => b - a);
+
+
+---
+
+<Layout 
+  title="Blog - Tulisan & Tutorial | Faiq Hudzaifah" 
+  description="Kumpulan artikel, tutorial web development, dan pemikiran dari Muhammad Faiq Hudzaifah."
+>
+  <!-- Lebar sudah dikembalikan ke max-w-6xl agar KONSISTEN -->
+  <main id="main-content" class="max-w-6xl mx-auto px-6 py-4 mb-20">
+    
+    <Hero 
+      titleTop="MY" 
+      titleBottom="BLOG" 
+      characterImg={karakterBlog}
+      subtitles={["Writings", "Thoughts & Tutorials", "2026"]} 
+      altText="Ilustrasi karakter Faiq Hudzaifah yang sedang bersiap membagikan tulisan dan tutorial seputar web development."
+    />
+    
+    <Divider />
+
+    <!-- Komponen Toolbar yang sudah dipisah -->
+    <BlogToolbar years={availableYears} />
+
+    <!-- Kontainer Artikel -->
+    <div id="blogContainer" class="space-y-4">
+      {sortedPosts.map((post) => (
+        <BlogCard post={post} />
+      ))}
+      
+      <div id="noResults" class="hidden text-center py-12">
+        <p class="text-sm font-bold text-gray-400 uppercase tracking-widest">Artikel tidak ditemukan</p>
+      </div>
+    </div>
+
+  </main>
+</Layout>
+
+<!-- Script filter tetap di sini karena harus memanipulasi elemen DOM -->
+<script>
+  const searchInput = document.getElementById('searchInput') as HTMLInputElement;
+  const yearFilter = document.getElementById('yearFilter') as HTMLSelectElement;
+  const popularBtn = document.getElementById('popularBtn');
+  const blogCards = document.querySelectorAll('.blog-card');
+  const noResults = document.getElementById('noResults');
+
+  function filterPosts() {
+    const searchQuery = searchInput.value.toLowerCase();
+    const selectedYear = yearFilter.value;
+    let visibleCount = 0;
+
+    blogCards.forEach((card) => {
+      const htmlElement = card as HTMLElement;
+      const title = htmlElement.dataset.title || '';
+      const year = htmlElement.dataset.year || '';
+
+      const matchesSearch = title.includes(searchQuery);
+      const matchesYear = selectedYear === 'all' || year === selectedYear;
+
+      if (matchesSearch && matchesYear) {
+        htmlElement.style.display = 'flex';
+        visibleCount++;
+      } else {
+        htmlElement.style.display = 'none';
+      }
+    });
+
+    if (visibleCount === 0 && noResults) {
+      noResults.classList.remove('hidden');
+    } else if (noResults) {
+      noResults.classList.add('hidden');
+    }
+  }
+
+  searchInput?.addEventListener('input', filterPosts);
+  yearFilter?.addEventListener('change', filterPosts);
+
+  popularBtn?.addEventListener('click', () => {
+    alert("Fitur analitik 'Paling Banyak Dibaca' sedang dalam tahap pengembangan!");
+  });
+</script>

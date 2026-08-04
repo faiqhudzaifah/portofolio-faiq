@@ -1,0 +1,33 @@
+---
+// Impor komponen Image bawaan Astro
+import { Image } from 'astro:assets';
+
+
+import profileImg from '../assets/faiq-photo.webp';
+
+import SocialsAstroComponent from './Socials.astro';
+---
+<div class="flex flex-col">
+  <!-- Photo Box -->
+  <!-- Menghapus bg-brand dan mengatur ukurannya agar pas dengan kontainer -->
+  <div class="aspect-[3/4] w-full relative mb-8 overflow-hidden bg-gray-100 shadow-sm">
+    
+    <!-- Gambar Profil Full Cover -->
+    <Image 
+      src={profileImg} 
+      alt="Foto Muhammad Faiq Hudzaifah" 
+      class="w-full h-full object-cover object-center"
+    />
+    
+  </div>
+  
+  <h2 class="text-5xl font-display font-bold mb-4">_hey,</h2>
+  
+  <p class="text-xs md:text-sm text-gray-700 leading-relaxed font-medium">
+    I'm an Informatics Engineering student at STMIK Mardira Indonesia with a passion for Full-Stack Development and AI/ML. Experienced in building full-stack web apps, REST APIs, and training deep learning models. Accustomed to modern tech stacks and creating efficient digital solutions.
+  </p>
+
+  <!-- Socials Component -->
+    <SocialsAstroComponent />
+
+</div>

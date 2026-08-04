@@ -1,0 +1,257 @@
+---
+// src/pages/gallery.astro
+import Layout from '../layouts/Layout.astro';
+import Divider from '../components/Divider.astro';
+import Hero from '../components/Hero.astro';
+import { Image } from 'astro:assets';
+import { getCollection } from 'astro:content';
+
+// Gambar khusus buat Hero di atas (bukan bagian dari data gallery)
+import karakterGallery from '../assets/karakter.webp';
+
+// ============================================================
+// Ambil data dari Content Collection "gallery"
+// (src/content/gallery/<kategori>/*.md, skema di src/content.config.ts)
+// ============================================================
+const entries = await getCollection('gallery', ({ data }) => !data.draft);
+
+entries.sort((a, b) => (b.data.date?.getTime() ?? 0) - (a.data.date?.getTime() ?? 0));
+
+// Deteksi bentuk kartu otomatis dari rasio asli gambar (width/height)
+function detectShape(width: number, height: number) {
+  if (!width || !height) return "square";
+  const ratio = width / height;
+  if (ratio >= 1.25) return "wide";
+  if (ratio <= 0.8) return "tall";
+  return "square";
+}
+
+const shapeClasses: Record<string, string> = {
+  square: "row-span-1",
+  wide: "col-span-2 row-span-1",
+  tall: "row-span-2",
+  big: "col-span-2 row-span-2",
+};
+
+const processedItems = entries.map((entry, index) => {
+  const { title, category, date, description, price, size, featured, image } = entry.data;
+  const shape = featured ? "big" : (size || detectShape(image.width, image.height));
+  return { index, title, category, date, description, price, shape, image };
+});
+
+// Data ringan buat dikirim ke script client-side (popup detail)
+const galleryData = processedItems.map((item) => ({
+  title: item.title,
+  category: item.category ?? "",
+  date: item.date ? item.date.toLocaleDateString("id-ID", { year: "numeric", month: "long" }) : "",
+  description: item.description ?? "",
+  price: item.price ?? 0,
+  src: item.image.src,
+}));
+---
+
+<Layout 
+  title="Gallery & Visual Showcase | Faiq Hudzaifah" 
+  description="Eksplorasi desain UI/UX, konsep layout web, dan visual showcase dari Muhammad Faiq Hudzaifah."
+>
+  <main id="main-content" class="max-w-6xl mx-auto px-6 py-4 mb-20">    
+    <Hero 
+      titleTop="GAL" 
+      titleBottom="LERY" 
+      characterImg={karakterGallery}
+      subtitles={["Visual Showcase", "Design & Explorations", "2026"]} 
+      altText="Ilustrasi maskot karakter yang sedang menampilkan koleksi karya seni dan desain UI/UX."
+    />
+    
+    <Divider />
+
+    <!-- BENTO GRID: bentuk kartu mengikuti orientasi gambar (wide / tall / square) -->
+    <div class="mt-12 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 grid-flow-dense auto-rows-[130px] sm:auto-rows-[160px] lg:auto-rows-[190px] gap-3 sm:gap-4 lg:gap-6">
+      {processedItems.map((item) => (
+        <div
+          class={`group relative cursor-pointer ${shapeClasses[item.shape]}`}
+          data-gallery-index={item.index}
+          tabindex="0"
+          role="button"
+          aria-haspopup="dialog"
+          aria-label={`Lihat detail ${item.title}`}
+        >
+          <div class="relative h-full overflow-hidden bg-gray-100 rounded-sm border-2 border-black shadow-[4px_4px_0px_rgba(0,0,0,1)] group-hover:shadow-[6px_6px_0px_rgba(0,0,0,1)] group-focus-visible:shadow-[6px_6px_0px_rgba(0,0,0,1)] transition-all">
+            
+            <Image 
+              src={item.image} 
+              alt={item.title} 
+              class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+            />
+
+            {item.price > 0 && (
+              <span class="absolute top-2 left-2 sm:top-3 sm:left-3 bg-brand text-black text-[10px] sm:text-xs font-display font-black uppercase tracking-widest px-2 py-1 border-2 border-black">
+                Rp {item.price.toLocaleString("id-ID")}
+              </span>
+            )}
+            
+            <!-- Overlay transparan saat di-hover / di-focus -->
+            <div class="absolute inset-0 bg-brand/80 opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity duration-300 flex flex-col items-start justify-end p-4">
+              <h3 class="text-black font-display font-black text-sm uppercase tracking-widest">{item.title}</h3>
+              {item.category && <p class="text-black/70 text-[11px] uppercase tracking-wide mt-1">{item.category}</p>}
+            </div>
+            
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- MODAL / POPUP DETAIL -->
+    <!-- ============================================================ -->
+    <div
+      id="galleryModal"
+      class="fixed inset-0 z-50 hidden items-center justify-center p-3 sm:p-6"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modalTitle"
+    >
+      <div id="modalBackdrop" class="absolute inset-0 bg-black/80 backdrop-blur-sm"></div>
+
+      <div
+        id="modalPanel"
+        class="relative bg-white border-2 border-black shadow-[8px_8px_0px_rgba(0,0,0,1)] w-full max-w-4xl max-h-[92vh] overflow-y-auto opacity-0 scale-95 transition-all duration-200"
+      >
+        <button
+          id="modalClose"
+          aria-label="Tutup"
+          class="absolute top-3 right-3 sm:top-4 sm:right-4 z-10 w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center bg-black text-white border-2 border-black hover:bg-brand hover:text-black transition-colors"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
+
+        <div class="grid grid-cols-1 md:grid-cols-2">
+          <div class="bg-gray-100 border-b-2 md:border-b-0 md:border-r-2 border-black flex items-center justify-center p-4 sm:p-6">
+            <img id="modalImage" src="" alt="" class="max-h-[35vh] md:max-h-[75vh] w-auto object-contain" />
+          </div>
+
+          <div class="p-6 sm:p-8 flex flex-col">
+            <span id="modalCategory" class="text-xs sm:text-sm font-bold uppercase tracking-widest text-brand"></span>
+            <h2 id="modalTitle" class="font-display font-black text-2xl sm:text-3xl uppercase mt-2 mb-2 leading-tight"></h2>
+            <p id="modalDate" class="text-xs sm:text-sm text-gray-500 uppercase tracking-wide mb-4"></p>
+            <p id="modalDescription" class="text-sm sm:text-base text-gray-700 leading-relaxed mb-6 flex-grow"></p>
+
+            <div class="mt-auto pt-2">
+              <a
+                id="modalDownloadFree"
+                href="#"
+                download
+                class="hidden w-full items-center justify-center gap-2 bg-black text-white font-display font-black uppercase tracking-widest text-xs sm:text-sm px-6 py-3 border-2 border-black hover:bg-brand hover:text-black transition-colors"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 21h16"/></svg>
+                Download Gratis
+              </a>
+              <button
+                id="modalDownloadPaid"
+                class="hidden w-full items-center justify-center gap-2 bg-brand text-black font-display font-black uppercase tracking-widest text-xs sm:text-sm px-6 py-3 border-2 border-black hover:bg-black hover:text-white transition-colors"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="1"/><path d="M8 10V7a4 4 0 018 0v3"/></svg>
+                Beli & Download - <span id="modalPrice"></span>
+              </button>
+              <p id="modalPaidNote" class="hidden text-[11px] text-gray-500 mt-2 text-center">File asli akan bisa diunduh setelah pembayaran berhasil.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+  </main>
+</Layout>
+
+<script define:vars={{ galleryData }}>
+  const modal = document.getElementById("galleryModal");
+  const modalPanel = document.getElementById("modalPanel");
+  const modalBackdrop = document.getElementById("modalBackdrop");
+  const modalClose = document.getElementById("modalClose");
+  const modalImage = document.getElementById("modalImage");
+  const modalTitle = document.getElementById("modalTitle");
+  const modalCategory = document.getElementById("modalCategory");
+  const modalDate = document.getElementById("modalDate");
+  const modalDescription = document.getElementById("modalDescription");
+  const modalDownloadFree = document.getElementById("modalDownloadFree");
+  const modalDownloadPaid = document.getElementById("modalDownloadPaid");
+  const modalPrice = document.getElementById("modalPrice");
+  const modalPaidNote = document.getElementById("modalPaidNote");
+
+  let lastFocused = null;
+
+  function openModal(item) {
+    modalImage.src = item.src;
+    modalImage.alt = item.title;
+    modalTitle.textContent = item.title;
+    modalCategory.textContent = item.category;
+    modalCategory.classList.toggle("hidden", !item.category);
+    modalDate.textContent = item.date;
+    modalDate.classList.toggle("hidden", !item.date);
+    modalDescription.textContent = item.description;
+
+    if (item.price && item.price > 0) {
+      modalDownloadPaid.classList.remove("hidden");
+      modalDownloadPaid.classList.add("flex");
+      modalDownloadFree.classList.add("hidden");
+      modalDownloadFree.classList.remove("flex");
+      modalPaidNote.classList.remove("hidden");
+      modalPrice.textContent = "Rp " + item.price.toLocaleString("id-ID");
+
+      modalDownloadPaid.onclick = () => {
+        // TODO: hubungkan ke payment gateway (mis. Midtrans / Xendit / Stripe).
+        // Sementara ini cuma placeholder supaya alurnya jelas.
+        alert("Fitur pembayaran belum terhubung ke payment gateway.\nHubungkan tombol ini ke checkout flow kamu.");
+      };
+    } else {
+      modalDownloadFree.classList.remove("hidden");
+      modalDownloadFree.classList.add("flex");
+      modalDownloadPaid.classList.add("hidden");
+      modalDownloadPaid.classList.remove("flex");
+      modalPaidNote.classList.add("hidden");
+      modalDownloadFree.href = item.src;
+      modalDownloadFree.setAttribute("download", item.title.replace(/\s+/g, "-").toLowerCase());
+    }
+
+    lastFocused = document.activeElement;
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
+    document.body.style.overflow = "hidden";
+
+    requestAnimationFrame(() => {
+      modalPanel.classList.remove("opacity-0", "scale-95");
+      modalPanel.classList.add("opacity-100", "scale-100");
+    });
+
+    modalClose.focus();
+  }
+
+  function closeModal() {
+    modalPanel.classList.remove("opacity-100", "scale-100");
+    modalPanel.classList.add("opacity-0", "scale-95");
+
+    setTimeout(() => {
+      modal.classList.add("hidden");
+      modal.classList.remove("flex");
+      document.body.style.overflow = "";
+      if (lastFocused) lastFocused.focus();
+    }, 150);
+  }
+
+  document.querySelectorAll("[data-gallery-index]").forEach((card) => {
+    const idx = Number(card.getAttribute("data-gallery-index"));
+    card.addEventListener("click", () => openModal(galleryData[idx]));
+    card.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        openModal(galleryData[idx]);
+      }
+    });
+  });
+
+  modalClose.addEventListener("click", closeModal);
+  modalBackdrop.addEventListener("click", closeModal);
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && !modal.classList.contains("hidden")) closeModal();
+  });
+</script>

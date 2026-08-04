@@ -1,0 +1,43 @@
+---
+// src/components/blog/BlogHeader.astro
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  post: CollectionEntry<'blog'>;
+  tags: string[];
+  readingTime: string;
+}
+
+const { post, tags, readingTime } = Astro.props;
+---
+<div class="mb-8 border-b-2 border-black pb-8">
+  <p class="text-[10px] font-bold text-brand-dark uppercase tracking-widest mb-4">Artikel</p>
+  
+  <h1 class="text-4xl md:text-5xl lg:text-6xl font-display font-black leading-[1.1] tracking-tight mb-6">
+    {post.data.title}
+  </h1>
+  
+  <div class="flex flex-wrap items-center gap-4 text-sm font-medium text-gray-500">
+    <div class="flex items-center gap-2">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-black">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
+      </svg>
+      {post.data.pubDate.toLocaleDateString()}
+    </div>
+    <span class="text-black">•</span>
+    <div class="flex items-center gap-2">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-black">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+      </svg>
+      {readingTime}
+    </div>
+    <span class="text-black">•</span>
+    <div class="flex gap-2">
+      {tags.map((tag: string) => (
+        <a href={`/tags/${tag}`} class="px-3 py-1 border-2 border-black rounded-md text-xs font-bold text-black hover:bg-brand hover:text-black transition-colors">
+          {tag}
+        </a>
+      ))}
+    </div>
+  </div>
+</div>

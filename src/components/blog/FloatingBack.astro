@@ -1,0 +1,17 @@
+---
+// src/components/blog/FloatingBack.astro
+---
+<div class="fixed bottom-6 right-6 z-50 flex flex-col items-center gap-2">
+  <a 
+    href="/blog" 
+    class="w-14 h-14 bg-brand border-2 border-transparent rounded-full flex items-center justify-center text-black hover:scale-105 hover:shadow-lg transition-all focus:outline-none" 
+    aria-label="Kembali ke Blog"
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-6 h-6">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+    </svg>
+  </a>
+  <span class="text-[10px] font-bold text-gray-600 uppercase tracking-widest hidden md:block">
+    Kembali ke Blog
+  </span>
+</div>
