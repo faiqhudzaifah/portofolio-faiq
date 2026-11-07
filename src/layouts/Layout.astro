@@ -10,6 +10,7 @@ interface Props {
 const {
   title = 'Portfolio - Muhammad Faiq Hudzaifah',
   description = 'Portofolio dan blog pribadi Muhammad Faiq Hudzaifah.',
+  
 } = Astro.props;
 
 const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : undefined;
@@ -27,6 +28,7 @@ const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : un
 
     <title>{title}</title>
     <meta name="description" content={description} />
+    <meta name="google-site-verification" content="HRZLoC4SqgvACNM6Wtlohkav_M71rsw7guOIc6PbJpg" />
 
     <!-- Open Graph / Twitter -->
     <meta property="og:type" content="website" />
