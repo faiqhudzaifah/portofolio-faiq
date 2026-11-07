@@ -12,6 +12,12 @@ export const profile = {
   phone: "+62 857-9353-3766",
   phoneHref: "tel:+628579353766",
   site: "https://faiqhudzaifah.netlify.app/",
+  googleVerification: "HRZLoC4SqgvACNM6Wtlohkav_M71rsw7guOIc6PbJpg",
+  socialImage: "/images/social-image.png",
+  socialImageAlt: "Faiq Hudzaifah",
+  socialImageWidth: 1200,
+  socialImageHeight: 630,
+  socialImageType: "image/png",
   links: {
     github: "https://github.com/faiqhudzaifah",
     linkedin: "https://www.linkedin.com/in/faiqhudzaifah/",

@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import FloatingNav from '../components/FloatingNav.astro';
+import { profile } from '../data/profile';
 
 interface Props {
   title?: string;
@@ -28,6 +29,7 @@ const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : un
 
     <title>{title}</title>
     <meta name="description" content={description} />
+    <meta name="google-site-verification" content={profile.googleVerification} />
     <meta name="google-site-verification" content="HRZLoC4SqgvACNM6Wtlohkav_M71rsw7guOIc6PbJpg" />
 
     <!-- Open Graph / Twitter -->
