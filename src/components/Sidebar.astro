@@ -10,7 +10,7 @@ import SocialsAstroComponent from './Socials.astro';
 <div class="flex flex-col">
   <!-- Photo Box -->
   <!-- Menghapus bg-brand dan mengatur ukurannya agar pas dengan kontainer -->
-  <div class="aspect-[3/4] w-full relative mb-8 overflow-hidden bg-gray-100 shadow-sm">
+  <div class="aspect-[3/4] w-full relative mb-8 overflow-hidden bg-gray-100 border-2 border-black rounded-xl shadow-[4px_4px_0px_#000] print:max-w-[140px] print:shadow-none">
     
     <!-- Gambar Profil Full Cover -->
     <Image 
@@ -21,10 +21,10 @@ import SocialsAstroComponent from './Socials.astro';
     
   </div>
   
-  <h2 class="text-5xl font-display font-bold mb-4">_hey,</h2>
+  <p class="text-5xl font-display font-bold mb-4" aria-hidden="true">_hey,</p>
   
-  <p class="text-xs md:text-sm text-gray-700 leading-relaxed font-medium">
-    I'm an Informatics Engineering student at STMIK Mardira Indonesia with a passion for Full-Stack Development and AI/ML. Experienced in building full-stack web apps, REST APIs, and training deep learning models. Accustomed to modern tech stacks and creating efficient digital solutions.
+  <p class="text-sm text-gray-700 leading-relaxed font-medium">
+    I'm an Informatics Engineering student at STMIK Mardira Indonesia focusing on data analysis and data science. I've completed Komdigi's Digital Talent Scholarship AI &amp; Data Scientist path (7 certified courses), from Python and data cleansing to deep learning and LLMs, and I apply it in hands-on projects like Otentik, a CNN that detects AI-generated faces. Outside of data, I design, build software, and host Podcast Faiq Hudzaifah.
   </p>
 
   <!-- Socials Component -->

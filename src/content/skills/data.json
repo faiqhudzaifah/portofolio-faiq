@@ -1,4 +1,30 @@
 {
-  "hardSkills": ["Python", "Java", "PHP", "React", "Next.js", "Astro", "Bun", "SQL"],
-  "softSkills": ["Data Science", "Machine Learning", "Full-Stack", "Philosophy", "Writing", "Design"]
+  "hardSkills": [
+    "Python",
+    "Pandas",
+    "NumPy",
+    "Scikit-Learn",
+    "SQL",
+    "Data Scraping",
+    "Data Cleansing",
+    "Exploratory Data Analysis",
+    "Deep Learning",
+    "LLM",
+    "Java",
+    "PHP",
+    "TypeScript",
+    "React",
+    "Next.js",
+    "Astro",
+    "Bun",
+    "Tailwind CSS"
+  ],
+  "softSkills": [
+    "Data Analysis",
+    "Data Science",
+    "Machine Learning",
+    "Philosophy",
+    "Writing",
+    "Design"
+  ]
 }

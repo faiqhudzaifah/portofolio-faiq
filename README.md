@@ -1,43 +1,31 @@
-# Astro Starter Kit: Minimal
+# Portfolio — Muhammad Faiq Hudzaifah
+
+Portfolio sekaligus CV. Dibangun dengan **Astro 7**, **Tailwind CSS 4**, dan **Bun**.
+
+## Menjalankan
 
 ```sh
-bun create astro@latest -- --template minimal
+bun install
+bun dev            # http://localhost:4321
+bun run build      # output ke ./dist
+bun preview        # cek hasil build
+bun run check      # type check (astro check)
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## Cara update konten (tanpa menyentuh komponen)
 
-## 🚀 Project Structure
+| Mau ubah | Edit di |
+| :-- | :-- |
+| Nama, kontak, pendidikan, GPA | `src/data/profile.ts` |
+| Pengalaman / project baru | tambah file `.md` di `src/content/experience/` |
+| Sertifikat tunggal | tambah file `.md` di `src/content/certifications/` |
+| Kursus baru di program yang sama | tambah item `courses` di `src/content/certifications/komdigi.md` |
+| File PDF sertifikat | taruh di `public/certificates/`, lalu isi `url` / `link` |
+| Skill & interest | `src/content/skills/data.json` |
+| Artikel blog | `src/content/blog/*.md` |
 
-Inside of your Astro project, you'll see the following folders and files:
+Angka di bagian statistik (jam pelatihan, jumlah sertifikat, jumlah project) dihitung otomatis dari konten.
 
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
-```
+## Simpan sebagai CV (PDF)
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
-
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
-
-Any static assets, like images, can be placed in the `public/` directory.
-
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `bun install`             | Installs dependencies                            |
-| `bun dev`             | Starts local dev server at `localhost:4321`      |
-| `bun build`           | Build your production site to `./dist/`          |
-| `bun preview`         | Preview your build locally, before deploying     |
-| `bun astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `bun astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+Tombol **Simpan sebagai PDF** di halaman utama membuka dialog cetak browser. Gaya cetaknya sudah diatur di `src/styles/global.css` (`@media print`).

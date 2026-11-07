@@ -1,0 +1,37 @@
+---
+import { profile } from '../data/profile';
+import { podcast } from '../data/podcast';
+import { linkGroups } from '../data/links';
+import SectionTitle from './SectionTitle.astro';
+
+const listen = [
+  { label: 'Spotify', url: profile.links.spotify },
+  { label: 'YouTube', url: profile.links.youtube },
+].filter((p) => p.url);
+---
+<section id="podcast" class="mt-20 scroll-mt-8 print:hidden">
+  <SectionTitle title="Beyond the Data" note="podcast & elsewhere" />
+
+  <article class="brutal-card p-5">
+    <h3 class="text-xl font-display font-black leading-tight">{podcast.name}</h3>
+    {podcast.description && <p class="text-sm text-gray-700 font-medium leading-relaxed mt-2">{podcast.description}</p>}
+    <ul class="flex flex-wrap gap-3 mt-4" aria-label="Dengarkan podcast">
+      {listen.map((p) => (
+        <li><a href={p.url} target="_blank" rel="noopener noreferrer" class="brutal-btn brutal-btn-primary !py-1.5 !text-xs">{p.label} ↗</a></li>
+      ))}
+    </ul>
+  </article>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
+    {linkGroups.map((g) => (
+      <div class="brutal-card p-4">
+        <h3 class="text-xs font-display font-bold tracking-widest text-gray-800 mb-3 border-b-2 border-black pb-1 uppercase">{g.title}</h3>
+        <ul class="flex flex-wrap gap-2">
+          {g.items.map((i) => (
+            <li><a href={i.url} target="_blank" rel="noopener noreferrer" class="chip hover:bg-brand transition-colors">{i.label} ↗</a></li>
+          ))}
+        </ul>
+      </div>
+    ))}
+  </div>
+</section>

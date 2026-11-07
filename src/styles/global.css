@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
 
 @theme {
   --color-brand: #F9C23C;
@@ -57,4 +58,45 @@
 }
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: #000000;
+}
+
+/* ============ Base & aksesibilitas ============ */
+html { scroll-behavior: smooth; }
+::selection { background: var(--color-brand); color: #000; }
+
+:focus-visible {
+  outline: 3px solid #000;
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+}
+
+/* ============ Komponen neo-brutalist yang dipakai ulang ============ */
+.brutal-card {
+  @apply bg-white border-2 border-black rounded-xl shadow-[4px_4px_0px_#000];
+}
+
+.brutal-btn {
+  @apply inline-flex items-center gap-2 font-display font-bold text-sm px-5 py-2.5 bg-white
+    border-2 border-black rounded-full shadow-[3px_3px_0px_#000] cursor-pointer
+    transition-all duration-150 hover:-translate-y-0.5 hover:shadow-[5px_5px_0px_#000]
+    active:translate-y-0 active:shadow-[1px_1px_0px_#000];
+}
+.brutal-btn-primary { @apply bg-brand; }
+
+.chip {
+  @apply inline-block font-display font-bold text-xs px-3 py-1.5 border-2 border-black rounded-md bg-white;
+}
+.chip-brand { @apply bg-brand; }
+
+/* ============ Cetak / Simpan sebagai PDF (portfolio = CV) ============ */
+@media print {
+  @page { margin: 14mm; }
+  body { background: #fff !important; }
+  .brutal-card { box-shadow: none !important; break-inside: avoid; }
+  a { text-decoration: none; }
 }

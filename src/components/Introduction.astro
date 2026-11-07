@@ -1,52 +1,40 @@
 ---
+import { profile } from '../data/profile';
+import SectionTitle from './SectionTitle.astro';
+
+const contacts = [
+  { icon: '📍', label: profile.location },
+  { icon: '📞', label: profile.phone, href: profile.phoneHref },
+  { icon: '✉️', label: profile.email, href: `mailto:${profile.email}` },
+  { icon: '🔗', label: profile.links.github.replace('https://', ''), href: profile.links.github },
+];
+const edu = profile.education;
 ---
-<div>
-  <!-- Title Section -->
-  <div class="relative mb-12">
-    <h2 class="text-5xl md:text-6xl font-display font-black">Introduction</h2>
-    <span class="font-cursive text-4xl text-brand-dark absolute -bottom-5 left-32 transform -rotate-3">about me</span>
-  </div>
+<section id="introduction" class="scroll-mt-8" aria-labelledby="intro-title">
+  <SectionTitle title="Introduction" note="about me" />
 
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-    <!-- Left Column: Profile & Education -->
-    <div>
-      <h3 class="text-xs font-display font-bold tracking-widest text-gray-800 mb-4 border-b-2 border-black pb-1">PROFILE & CONTACT</h3>
-      <h4 class="text-2xl font-display font-medium mb-4">Muhammad Faiq Hudzaifah</h4>
-      <ul class="text-xs space-y-2 mb-8 text-gray-700 font-medium">
-        <li class="flex items-start gap-2"><span class="text-brand-dark">📍</span> Baleendah, Bandung, Indonesia</li>
-        <li class="flex items-start gap-2"><span class="text-brand-dark">📞</span> +62 857-9353-3766</li>
-        <li class="flex items-start gap-2"><span class="text-brand-dark">✉️</span> faiqhudzaifah98@gmail.com</li>
-        <li class="flex items-start gap-2"><span class="text-brand-dark">🔗</span> github.com/faiqhzf</li>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="brutal-card p-5">
+      <h3 class="text-xs font-display font-bold tracking-widest text-gray-800 mb-3 border-b-2 border-black pb-1">PROFILE &amp; CONTACT</h3>
+      <p class="text-xl font-display font-bold mb-4">{profile.name}</p>
+      <ul class="text-sm space-y-2 text-gray-700 font-medium">
+        {contacts.map((c) => (
+          <li class="flex items-start gap-2">
+            <span aria-hidden="true">{c.icon}</span>
+            {c.href
+              ? <a href={c.href} class="underline decoration-brand decoration-2 underline-offset-2 hover:bg-brand break-all">{c.label}</a>
+              : <span>{c.label}</span>}
+          </li>
+        ))}
       </ul>
-
-      <h3 class="text-xs font-display font-bold tracking-widest text-gray-800 mb-4 border-b-2 border-black pb-1">EDUCATION</h3>
-      <div class="mb-4 text-xs font-medium text-gray-700">
-        <p class="font-bold text-black mb-1">STMIK MARDIRA INDONESIA</p>
-        <p>B.S. Informatics Engineering</p>
-        <p>Aug 2023 - Expected 2027 (GPA 3.81)</p>
-      </div>
     </div>
 
-    <!-- Right Column: Experience/Projects -->
-    <div>
-      <h3 class="text-xs font-display font-bold tracking-widest text-gray-800 mb-4 border-b-2 border-black pb-1">PROJECT & EXPERIENCE</h3>
-      
-      <div class="space-y-4">
-        <div>
-          <p class="text-[11px] font-display font-bold uppercase">Tracking Project (2026)</p>
-          <p class="text-[10px] text-gray-600 leading-tight mt-1 font-medium">Full-Stack Dev. Built a gamified productivity platform with Elysia.js, Bun, React 18, and Astro v5.</p>
-        </div>
-        
-        <div>
-          <p class="text-[11px] font-display font-bold uppercase">Otentik (2025-2026)</p>
-          <p class="text-[10px] text-gray-600 leading-tight mt-1 font-medium">AI/ML Engineer. Trained a CNN to detect AI-generated faces, deployed as a client-side web app.</p>
-        </div>
-
-        <div>
-          <p class="text-[11px] font-display font-bold uppercase">SMA Pasundan Web (2025-2026)</p>
-          <p class="text-[10px] text-gray-600 leading-tight mt-1 font-medium">Full-Stack Dev. Rebuilt school website with Next.js & CMS.</p>
-        </div>
-      </div>
+    <div class="brutal-card p-5">
+      <h3 class="text-xs font-display font-bold tracking-widest text-gray-800 mb-3 border-b-2 border-black pb-1">EDUCATION</h3>
+      <p class="text-xl font-display font-bold mb-1">{edu.school}</p>
+      <p class="text-sm text-gray-700 font-medium">{edu.degree}</p>
+      <p class="text-sm text-gray-700 font-medium mb-3">{edu.period}</p>
+      <span class="chip chip-brand">GPA {edu.gpa}</span>
     </div>
   </div>
-</div>
+</section>

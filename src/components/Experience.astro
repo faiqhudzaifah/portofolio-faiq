@@ -1,0 +1,54 @@
+---
+import { getCollection } from 'astro:content';
+import SectionTitle from './SectionTitle.astro';
+
+const items = (await getCollection('experience')).sort((a, b) => a.data.order - b.data.order);
+const typeLabel = { project: 'Project', program: 'Program', work: 'Work', organization: 'Organization' } as const;
+---
+<section id="experience" class="mt-20 scroll-mt-8">
+  <SectionTitle title="Experience" note="what I've built & learned" />
+
+  <ol class="relative border-l-2 border-black ml-2 space-y-8">
+    {items.map((item) => (
+      <li class="relative pl-6">
+        <span aria-hidden="true" class="absolute -left-[9px] top-6 w-4 h-4 rounded-full bg-brand border-2 border-black"></span>
+        <article class="brutal-card p-5">
+          <div class="flex flex-wrap items-center gap-2 mb-2">
+            <span class:list={['chip text-[11px] uppercase tracking-wider', item.data.type === 'program' ? 'bg-black text-white' : 'chip-brand']}>{typeLabel[item.data.type]}</span>
+            <span class="text-xs font-bold text-gray-500">{item.data.period}</span>
+          </div>
+          <h3 class="text-xl font-display font-black leading-tight">{item.data.role}</h3>
+          <p class="text-sm font-bold text-brand-dark mb-2">
+            {item.data.link
+              ? <a href={item.data.link} target="_blank" rel="noopener noreferrer" class="underline underline-offset-2 hover:text-black">{item.data.org} ↗</a>
+              : item.data.org}
+          </p>
+          <p class="text-sm text-gray-700 font-medium leading-relaxed">{item.data.summary}</p>
+          {item.data.highlights && (
+            <ul class="mt-3 space-y-1.5 text-sm text-gray-700 font-medium list-disc pl-5 marker:text-brand-dark">
+              {item.data.highlights.map((h) => <li>{h}</li>)}
+            </ul>
+          )}
+          {(item.data.proof ?? []).length > 0 && (
+            <ul class="flex flex-wrap gap-2 mt-4" aria-label="Bukti">
+              {(item.data.proof ?? []).map((pr) => (
+                <li>
+                  <a
+                    href={pr.url}
+                    {...(pr.url.startsWith('#') ? {} : { target: '_blank', rel: 'noopener noreferrer' })}
+                    class="chip chip-brand hover:bg-white transition-colors !text-[11px] uppercase tracking-wider"
+                  >{pr.label}{pr.url.startsWith('#') ? ' ↓' : ' ↗'}</a>
+                </li>
+              ))}
+            </ul>
+          )}
+          {(item.data.stack ?? []).length > 0 && (
+            <ul class="flex flex-wrap gap-2 mt-4" aria-label="Tech stack">
+              {(item.data.stack ?? []).map((t) => <li class="chip">{t}</li>)}
+            </ul>
+          )}
+        </article>
+      </li>
+    ))}
+  </ol>
+</section>

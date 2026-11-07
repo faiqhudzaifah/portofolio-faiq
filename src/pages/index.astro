@@ -2,40 +2,81 @@
 import Layout from '../layouts/Layout.astro';
 import Hero from '../components/Hero.astro';
 import Sidebar from '../components/Sidebar.astro';
+import Stats from '../components/Stats.astro';
 import Introduction from '../components/Introduction.astro';
-import Skills from '../components/Skills.astro';
+import Experience from '../components/Experience.astro';
 import Certifications from '../components/Certifications.astro';
-import karakterImg from '../assets/karakter.webp'; 
+import Skills from '../components/Skills.astro';
+import BeyondData from '../components/BeyondData.astro';
+import karakterImg from '../assets/karakter.webp';
+import { profile } from '../data/profile';
+
+// Link dukungan/jualan tidak dimasukkan ke identitas (sameAs).
+const { patreon, karyakarsa, lynk, ...identityLinks } = profile.links;
+
+const personSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: profile.name,
+  alternateName: [profile.shortName, 'faiqhzf'],
+  jobTitle: profile.role,
+  description: profile.headline,
+  url: profile.site,
+  email: `mailto:${profile.email}`,
+  address: { '@type': 'PostalAddress', addressLocality: 'Bandung', addressCountry: 'ID' },
+  alumniOf: { '@type': 'CollegeOrUniversity', name: profile.education.school },
+  sameAs: [...Object.values(identityLinks), 'https://substack.com/@faiqhudzaifah'],
+};
 ---
 
-<Layout 
-  title="Portfolio - Muhammad Faiq Hudzaifah" 
-  description="Portofolio resmi Muhammad Faiq Hudzaifah. Berisi kompilasi project web development, desain, dan sertifikasi."
+<Layout
+  title={`${profile.shortName} — Data Analyst & Data Science Portfolio`}
+  description="Portofolio dan CV Muhammad Faiq Hudzaifah: calon data analyst dan data scientist. Project, pengalaman, dan sertifikasi Data Science, Deep Learning, dan LLM."
 >
+  <script type="application/ld+json" set:html={JSON.stringify(personSchema)} />
+
   <main id="main-content" class="max-w-6xl mx-auto px-6 py-4">
-    <!-- Hero Section -->
-    <Hero 
-      titleTop="PORT" 
-      titleBottom="FOLIO" 
+    <!-- Hanya tampil saat dicetak sebagai CV -->
+    <h1 class="hidden print:block text-3xl font-display font-black mb-1">{profile.name}</h1>
+    <p class="hidden print:block text-sm font-bold text-gray-700 mb-4">{profile.headline}</p>
+
+    <Hero
+      titleTop="PORT"
+      titleBottom="FOLIO"
       characterImg={karakterImg}
-      subtitles={["Compilation", "Projects & Certifications", "2026"]} 
+      subtitles={['Data Science', 'Data Analysis & ML', '2026']}
       altText="Ilustrasi karakter Faiq Hudzaifah menyambut pengunjung di halaman portofolio utama."
-    />
-    
-    <!-- Main Content Grid -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 mt-8 md:mt-16 pb-20">
-      <!-- Kiri: 4 Kolom -->
-      <div class="lg:col-span-4">
-        <Sidebar />
+    >
+      <div class="flex flex-wrap justify-center gap-3 mt-8">
+        <a href="#experience" class="brutal-btn brutal-btn-primary">Lihat pengalaman ↓</a>
+        <a href={`mailto:${profile.email}`} class="brutal-btn">Hubungi saya</a>
+        <button type="button" id="print-cv" class="brutal-btn">Simpan sebagai PDF</button>
       </div>
-      
-      <!-- Kanan: 8 Kolom -->
+      <p class="mt-6 text-xs md:text-sm font-display font-bold uppercase tracking-widest text-gray-600 max-w-xl">
+        Data first <span aria-hidden="true">✦</span> also Software Engineer, Graphic Designer &amp; Podcaster
+      </p>
+    </Hero>
+
+    <Stats />
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 mt-12 md:mt-16 pb-24">
+      <div class="lg:col-span-4">
+        <div class="lg:sticky lg:top-8">
+          <Sidebar />
+        </div>
+      </div>
+
       <div class="lg:col-span-8">
         <Introduction />
-		
-		<Certifications />
+        <Experience />
+        <Certifications />
         <Skills />
+        <BeyondData />
       </div>
     </div>
   </main>
 </Layout>
+
+<script>
+  document.getElementById('print-cv')?.addEventListener('click', () => window.print());
+</script>

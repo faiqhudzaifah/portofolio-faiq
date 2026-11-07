@@ -1,0 +1,8 @@
+---
+interface Props { title: string; note?: string; }
+const { title, note } = Astro.props;
+---
+<div class="relative mb-10">
+  <h2 class="text-4xl md:text-5xl font-display font-black">{title}</h2>
+  {note && <span class="font-cursive text-3xl text-brand-dark block -mt-1 -rotate-2 origin-left" aria-hidden="true">{note}</span>}
+</div>

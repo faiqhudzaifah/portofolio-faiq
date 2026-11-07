@@ -1,36 +1,21 @@
 ---
-// src/components/Skills.astro
 import { getEntry } from 'astro:content';
-import Divider from './Divider.astro';
+import SectionTitle from './SectionTitle.astro';
 
-// Ambil entri data tunggal dari file data.json di koleksi skills
 const skillsData = await getEntry('skills', 'data');
-
-// Fallback aman jika file belum terbaca
-const hardSkills = skillsData ? skillsData.data.hardSkills : [];
-const softSkills = skillsData ? skillsData.data.softSkills : [];
+const hardSkills = skillsData?.data.hardSkills ?? [];
+const softSkills = skillsData?.data.softSkills ?? [];
 ---
+<section id="skills" class="mt-20 scroll-mt-8">
+  <SectionTitle title="Skills" note="tools I reach for" />
 
-<div class="mt-8">
-  <Divider/>
+  <h3 class="text-xs font-display font-bold tracking-widest text-gray-800 mb-3">TECH STACK</h3>
+  <ul class="flex flex-wrap gap-2.5 mb-8">
+    {hardSkills.map((skill) => <li class="chip chip-brand shadow-[2px_2px_0px_#000]">{skill}</li>)}
+  </ul>
 
-  <div class="text-center">
-    <h3 class="text-[10px] font-display font-bold tracking-[0.2em] mb-6">SOFTWARE SKILLS</h3>
-    <div class="flex flex-wrap justify-center gap-3 mb-10">
-      {hardSkills.map(skill => (
-        <div class="bg-brand text-black font-display font-bold text-xs py-3 px-4 rounded-md shadow-sm min-w-[3rem]">
-          {skill}
-        </div>
-      ))}
-    </div>
-
-    <h3 class="text-[10px] font-display font-bold tracking-[0.2em] mb-6">INTEREST</h3>
-    <div class="flex flex-wrap justify-center gap-3">
-      {softSkills.map(interest => (
-        <div class="border border-brand text-brand-dark font-display font-bold text-[10px] tracking-wider uppercase py-2 px-6 rounded-full">
-          {interest}
-        </div>
-      ))}
-    </div>
-  </div>
-</div>
+  <h3 class="text-xs font-display font-bold tracking-widest text-gray-800 mb-3">INTERESTS</h3>
+  <ul class="flex flex-wrap gap-2.5">
+    {softSkills.map((i) => <li class="border-2 border-black text-black font-display font-bold text-xs tracking-wider uppercase py-1.5 px-4 rounded-full bg-white">{i}</li>)}
+  </ul>
+</section>
